@@ -22,7 +22,7 @@ namespace ProgrammersBlog.Entities.Concrete
         public Category Category { get; set; } //Bir Makelenin bir tane Kategorisi var 
         public int UserId { get; set; }
         public User User { get; set; } //Bir Makelenin bir tane User'ı var 
-
+        public ICollection<Comment> Comments { get; set; } //Bir makale birden fazla yoruma sahip olab.
 
     }
 }
