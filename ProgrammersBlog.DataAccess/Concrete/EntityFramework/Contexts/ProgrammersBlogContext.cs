@@ -15,7 +15,7 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(connectionString: @"Server=(localdb)\MSSQLLocalDB;Database=ProgrammersBlogDb;Trusted_Connection=True;
-                                                            Timeout=30;MultipleActiveResultSets=True;");
+                                                            Timeout=60;MultipleActiveResultSets=True;");
         }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }
