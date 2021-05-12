@@ -43,6 +43,30 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
             builder.Property(u => u.Note).HasMaxLength(500);
            // builder.Property(u => u.Email).HasColumnName("USER_EMAIL");
             builder.ToTable("Users");
+            //Tablolar oluşt. esnasında veri girisi yapıyoruz .Initializer ın aksine ...
+            //HasData() Tabloda böyle bir değer var mı kont. için kullanılır
+
+            builder.HasData(new User()
+            {
+                Id = 1,
+                RoleId=1,
+                FirstName = "Ahmet",
+                LastName="Savas",
+                Email="ahmetihsan24@gmail.com",
+                Username="ahmetihsan",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedbyName = "InitialCreate",
+                ModifiedDate = DateTime.Now,
+                Description = "Admin Rolü , Tüm Haklara Sahiptir.",         
+                Note = "Admin Kullanıcısıdır.",
+                PasswordHash =  Encoding.ASCII.GetBytes ("0192023a7bbd73250516f069df18b500"),//sifre:admin123
+                Picture= "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSX4wVGjMQ37PaO4PdUVEAliSLi8-c2gJ1zvQ&usqp=CAU"
+
+
+            });
 
         }
     }

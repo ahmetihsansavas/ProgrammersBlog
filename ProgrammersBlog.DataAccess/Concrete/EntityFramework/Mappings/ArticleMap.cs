@@ -46,6 +46,86 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
             builder.HasOne<User>(a => a.User).WithMany(u => u.Articles).HasForeignKey(a => a.UserId);
             //Tablo oluş. zaman ki ismi "Articles" olarak oluşt.
             builder.ToTable("Articles");
+            //DB oluşt. esnasında veri girisi yapıyoruz .Initializer ın aksine , Tüm degerlerin girilr. nedeni DB oluşt. yap.
+            //HasData() Tabloda böyle bir değer var mı kont. için kullanılır
+            builder.HasData(new Article()
+            {
+                Id = 1,
+                CategoryId=1,
+                Title = "C# 9.0 ve .NET 5 Yenilikleri",
+                Content= "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. " +
+                "Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır." +
+                " Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi " +
+                "Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.",
+                Thumbnail = "Default.jpg",
+                SeoDescription= "C# 9.0 ve .NET 5 Yenilikleri",
+                SeoTags="C#, C# 9 , .NET5 ,.NET Framework , .NET Core ",
+                SeoAuthor = "Ali Can",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedbyName = "InitialCreate",
+                ModifiedDate = DateTime.Now,
+                Note = "C# 9.0 ve .NET 5 Yenilikleri.",
+                UserId = 1,
+                ViewsCount =100,
+                CommentCount=1
+            },
+            new Article()
+            {
+                Id = 2,
+                CategoryId = 2,
+                Title = "C++ 11 ve 19 Yenilikleri",
+                Content = "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. " +
+                "Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır." +
+                " Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi " +
+                "Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.",
+                Thumbnail = "Default.jpg",
+                SeoDescription = "C++ 11 ve 19 Yenilikleri",
+                SeoTags = "C#, C# 9 , .NET5 ,.NET Framework , .NET Core ",
+                SeoAuthor = "Ali Can",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedbyName = "InitialCreate",
+                ModifiedDate = DateTime.Now,
+                Note = "C++ 11 ve 19 Yenilikleri",
+                UserId = 1,
+                ViewsCount = 100,
+                CommentCount = 1
+            },
+            new Article()
+            {
+                Id = 3,
+                CategoryId = 3,
+                Title = "Javascript ES2019 ve ES2020 Yenilikleri",
+                Content = "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. " +
+                "Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır." +
+                " Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi " +
+                "Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur.",
+                Thumbnail = "Default.jpg",
+                SeoDescription = "Javascript ES2019 ve ES2020 Yenilikleri",
+                SeoTags = "C#, C# 9 , .NET5 ,.NET Framework , .NET Core ",
+                SeoAuthor = "Ali Can",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedbyName = "InitialCreate",
+                ModifiedDate = DateTime.Now,
+                Note = "Javascript ES2019 ve ES2020 Yenilikleri",
+                UserId = 1,
+                ViewsCount = 100,
+                CommentCount = 1
+            }
+
+
+            );
         }
     }
 }

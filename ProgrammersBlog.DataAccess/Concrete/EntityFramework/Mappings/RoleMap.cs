@@ -30,6 +30,24 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
             builder.Property(r => r.IsDeleted).IsRequired();
             builder.Property(r => r.Note).HasMaxLength(500);
             builder.ToTable("Roles");
+            //Tablolar oluşt. esnasında veri girisi yapıyoruz .Initializer ın aksine ...
+            //HasData() Tabloda böyle bir değer var mı kont. için kullanılır
+            builder.HasData(new Role() 
+            {
+                Id=1,
+                Name = "Admin",
+                Description = "Admin Rolü , Tüm Haklara Sahiptir.",
+                IsActive = true,
+                IsDeleted =false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedbyName = "InitialCreate",
+                ModifiedDate=DateTime.Now,
+                Note ="Admin Rolüdür."
+            
+            
+            });
+
         }
     }
 }
