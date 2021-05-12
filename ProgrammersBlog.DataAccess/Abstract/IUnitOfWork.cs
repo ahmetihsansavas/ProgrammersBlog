@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.DataAccess.Abstract
 {
-     public interface IUnitOfWork:IDisposable
+     public interface IUnitOfWork:IAsyncDisposable
     {
         //Unit of Work sayesinde tüm repositorileri aynı yerden yönet.
         //Örn. _articleRepository.AddAsync(article)
