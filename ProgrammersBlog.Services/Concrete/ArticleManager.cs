@@ -1,4 +1,5 @@
-﻿using ProgrammersBlog.DataAccess.Abstract;
+﻿using AutoMapper;
+using ProgrammersBlog.DataAccess.Abstract;
 using ProgrammersBlog.Entities.Concrete;
 using ProgrammersBlog.Entities.Dtos;
 using ProgrammersBlog.Services.Abstract;
@@ -16,6 +17,7 @@ namespace ProgrammersBlog.Services.Concrete
     public class ArticleManager : IArticleService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         public ArticleManager(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
