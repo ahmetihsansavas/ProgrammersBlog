@@ -23,15 +23,20 @@ namespace ProgrammersBlog.Services.Concrete
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IResult> Add(ArticleAddDto articleAddDto, string createdByName)
+        public async Task<IDataResult<ArticleDto>> Add(ArticleAddDto articleAddDto, string createdByName)
         {
             var article = _mapper.Map<Article>(articleAddDto); //AutoMapper doğrudan articleAddDto degiskenini Article ' a çeviriyor
             article.CreatedByName = createdByName;
             article.ModifiedbyName = createdByName;
             article.UserId = 1;
-            await _unitOfWork.Articles.AddAsync(article);
+            var addedArticle =  await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.SaveAsync();
-            return new Result(ResultStatus.Success,$"{articleAddDto.Title} baslıklı makale basarıyla eklenmistir.");
+            return new DataResult<ArticleDto>(ResultStatus.Success,$"{articleAddDto.Title} baslıklı makale basarıyla eklenmistir.",new ArticleDto() 
+            {
+                 Article = addedArticle,
+                 ResultStatus = ResultStatus.Success,
+                 Message = $"{articleAddDto.Title} baslıklı makale basarıyla eklenmistir."
+            });
         }
 
         public async Task<IResult> Delete(int articleId, string modifiedByName)
@@ -150,13 +155,19 @@ namespace ProgrammersBlog.Services.Concrete
             return new Result(ResultStatus.Error, " Böyle bir  makale bulunanammıstır.");
         }
 
-        public async Task<IResult> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
+        public async Task<IDataResult<ArticleDto>> Update(ArticleUpdateDto articleUpdateDto, string modifiedByName)
         {
             var article = _mapper.Map<Article>(articleUpdateDto);
             article.ModifiedbyName = modifiedByName;
-            await _unitOfWork.Articles.UpdateAsync(article);
+          var updatedArticle =  await _unitOfWork.Articles.UpdateAsync(article);
             await _unitOfWork.SaveAsync();
-            return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} baslıklı makale güncellenmistir..");
+            return new DataResult<ArticleDto>(ResultStatus.Success, $"{articleUpdateDto.Title} baslıklı makale güncellenmistir..",new ArticleDto() 
+            {
+                 Article = updatedArticle,
+                 ResultStatus = ResultStatus.Success,
+                 Message = $"{articleUpdateDto.Title} baslıklı makale güncellenmistir.."
+
+            });
         }
     }
 }

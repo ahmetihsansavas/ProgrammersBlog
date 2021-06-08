@@ -19,8 +19,8 @@ namespace ProgrammersBlog.Shared.Data.Abstract
         Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> predicate=null, params Expression<Func<T, object>>[] includeProperties);
         //Tüm kategorileri getirmek istiyoruz reporsitory.GetAllAsync(y=>y.ArticleID==1);
 
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
+        Task<T> AddAsync(T entity); //ajax işlem. için generic yapmamız gerekli cunku geriye veri dönmesi gerekli ki json a cevirip view e gönd.
+        Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         // var result = _userReporsitory.AnyAsync(u=>u.FirstName=="Ali"); var mı 
