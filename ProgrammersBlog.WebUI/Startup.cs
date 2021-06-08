@@ -17,6 +17,8 @@ namespace ProgrammersBlog.WebUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews().AddRazorRuntimeCompilation(); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
+            services.AddAutoMapper(typeof(Startup)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý
             services.LoadMyServices();
         }
 
@@ -26,16 +28,21 @@ namespace ProgrammersBlog.WebUI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages(); //Hata yasad. bize yardýmcý olacak
             }
 
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapAreaControllerRoute(
+                    name:"Admin",
+                    areaName:"Admin",
+                    pattern:"Admin/{controller=Home}/{action=Index}/{id?}"
+                    
+                    );
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
