@@ -29,7 +29,8 @@ namespace ProgrammersBlog.Services.Concrete
             article.CreatedByName = createdByName;
             article.ModifiedbyName = createdByName;
             article.UserId = 1;
-            await _unitOfWork.Articles.AddAsync(article).ContinueWith(t=>_unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.AddAsync(article);
+            await _unitOfWork.SaveAsync();
             return new Result(ResultStatus.Success,$"{articleAddDto.Title} baslıklı makale basarıyla eklenmistir.");
         }
 
@@ -42,7 +43,8 @@ namespace ProgrammersBlog.Services.Concrete
                 article.IsDeleted = true;
                 article.ModifiedbyName = modifiedByName;
                 article.ModifiedDate = DateTime.Now;
-                await _unitOfWork.Articles.UpdateAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.UpdateAsync(article);
+                await _unitOfWork.SaveAsync();
                 return new Result(ResultStatus.Success, $"{article.Title} baslıklı makale basarıyla silinmistir.");
             }
             return new Result(ResultStatus.Error, " Böyle bir  makale bulunanammıstır.");
@@ -141,7 +143,8 @@ namespace ProgrammersBlog.Services.Concrete
             if (result)
             {
                 var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId);
-                await _unitOfWork.Articles.DeleteAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
+                await _unitOfWork.Articles.DeleteAsync(article);
+                await _unitOfWork.SaveAsync();
                 return new Result(ResultStatus.Success, $"{article.Title} baslıklı makale basarıyla veri tabanından silinmistir.");
             }
             return new Result(ResultStatus.Error, " Böyle bir  makale bulunanammıstır.");
@@ -151,7 +154,8 @@ namespace ProgrammersBlog.Services.Concrete
         {
             var article = _mapper.Map<Article>(articleUpdateDto);
             article.ModifiedbyName = modifiedByName;
-            await _unitOfWork.Articles.UpdateAsync(article).ContinueWith(t=>_unitOfWork.SaveAsync());
+            await _unitOfWork.Articles.UpdateAsync(article);
+            await _unitOfWork.SaveAsync();
             return new Result(ResultStatus.Success, $"{articleUpdateDto.Title} baslıklı makale güncellenmistir..");
         }
     }

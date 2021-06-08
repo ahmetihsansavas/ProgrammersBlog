@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using ProgrammersBlog.Services.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Extensions;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace ProgrammersBlog.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation(); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
-            services.AddAutoMapper(typeof(Startup)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý
+            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
             services.LoadMyServices();
         }
 
