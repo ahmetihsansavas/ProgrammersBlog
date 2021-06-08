@@ -76,7 +76,13 @@ namespace ProgrammersBlog.Services.Concrete
                 });
             }
 
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir Kategori bulunamadı.",null);
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiç bir Kategori bulunamadı.",new CategoryListDto() 
+            {
+                 Categories = null,
+                 ResultStatus = ResultStatus.Error,
+                 Message = "Hiç bir Kategori bulunamadı." //data null geld. zaman view içeris. çözmek için
+
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeleted()

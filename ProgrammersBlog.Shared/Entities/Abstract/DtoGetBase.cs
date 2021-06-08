@@ -10,5 +10,6 @@ namespace ProgrammersBlog.Shared.Entities.Abstract
    public abstract class DtoGetBase
     {
         public virtual ResultStatus ResultStatus { get; set; } //sanal olmalı ki kullanca. farklı class larda override edebilelim.
+        public virtual string Message { get; set; }
     }
 }
