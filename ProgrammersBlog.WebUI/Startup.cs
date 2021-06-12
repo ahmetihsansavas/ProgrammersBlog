@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ProgrammersBlog.WebUI
@@ -20,7 +21,12 @@ namespace ProgrammersBlog.WebUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation(); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
+            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt=> 
+            {
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());//ResultStatus = 1 success gibi sayýsal enum deðerlerini kullan. için
+                //eðer ResultStatus === "success" gibi ResultStatus enum ý mýz varsa opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)),
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; //Ic ice olan objelerde objeler birb. referans ettiklerinde sorun yasamamak icin
+            }); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
             services.LoadMyServices();
         }

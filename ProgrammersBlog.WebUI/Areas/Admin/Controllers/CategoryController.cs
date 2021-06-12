@@ -7,6 +7,7 @@ using ProgrammersBlog.WebUI.Areas.Admin.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
@@ -40,12 +41,33 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CategoryAddDto categoryAddDto)
         {
-            var categoryAjaxModel = new CategoryAddAjaxViewModel()
+            if (ModelState.IsValid)
             {
-                CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial",categoryAddDto), //Projemize dısarıdan ekled. ControllerExtensions sınıfımızdan cektig. metod bu metod sayesinde partial view e json olarak veri aktarımı yap.
-                
-            };
-            return PartialView("_CategoryAddPartial");
+                //eğer eklenecek olan veride bir hata yoksa dn ye ekliyoruz daha sonra Success olan veriyi kull. tekrardan göst. icin
+               //Json'a donust. ve eklenen result verisinin datasını alıyoruz ve göst. olan sayfaya render ediyoruz.
+                var result = await _categoryService.Add(categoryAddDto, "Ahmet");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryAddAjaxModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel()
+                    {
+                        CategoryDto = result.Data,
+                        CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto)
+
+
+                    }) ;
+                    return Json(categoryAddAjaxModel);
+                }
+            }
+
+
+            var categoryAddAjaxErrorModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel()
+            {
+                CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto)
+
+
+            });
+            return Json(categoryAddAjaxErrorModel);
+
         }
     }
 }
