@@ -62,7 +62,8 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
 
             var categoryAddAjaxErrorModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel()
             {
-                CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto)
+                CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto),
+                
 
 
             });

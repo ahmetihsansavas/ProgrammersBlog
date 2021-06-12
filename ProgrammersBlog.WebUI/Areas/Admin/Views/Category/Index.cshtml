@@ -95,7 +95,7 @@
                             },
                             className: 'btn btn-success',
                             action: function (e, dt, node, config) {
-                        
+
                             }
                         },
                         {
@@ -298,6 +298,7 @@
 
                 });
                 @* DataTables ends here*@
+                @* Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here. *@
                 $(function () {
                     const url = '@Url.Action("Add","Category")';
                     const placeHolderDiv = $('#modalPlaceHolder');
@@ -306,6 +307,47 @@
                             placeHolderDiv.html(data);
                             placeHolderDiv.find(".modal").modal('show');
 
+                        });
+
+                    });
+                @* Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here. *@
+                    @* Ajax POST / Posting the FormData as CategoryAddDto  starts from here. *@
+                    placeHolderDiv.on('click','#btnSave', function (event) {
+                        event.preventDefault(); //.net taraf. butonun submit yapıp sayf. yenilememesi icin butonun tıklanmasını engell.
+                        const form = $('#form-category-add'); // _CategoryAddPartial da ki formu seciyoruz.
+                        const actionUrl = form.attr('action'); // Formun içeris. bulunan action ı seciyoruz..
+                        const dataToSend = form.serialize(); //Gönd. olan datayı formu serilest. seciyoruz..
+                        $.post(actionUrl, dataToSend).done(function (data) {
+                            console.log("1." + data);
+                            const categoryAddAjaxModel = jQuery.parseJSON(data);//bizlere(Controllerdan) return isleminden gelen data yı parse etmek istiyoruz
+                            console.log(categoryAddAjaxModel);
+                            const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial); //Form da gönd olan verilerin  veya hatalı yelerin kullanıcıya göst. icin
+                            placeHolderDiv.find('.modal-body').replaceWith(newFormBody);//eski formu yenisi ile degist.
+                            const isValid = newFormBody.find('[name="IsValid"]').val() === 'True'; //formumuzdaki kont icin yazd. IsValid in degerini alıyoruz.
+                            console.log(isValid);
+                            if (isValid) {
+                                placeHolderDiv.find('.modal').modal('hide');
+                                const newTableRow = ` 
+                            <tr>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
+                                <td${categoryAddAjaxModel.CategoryDto.Category.IsActive}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.IsDeleted}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedDate}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedDate}</td>
+                                <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedbyName}</td>
+                            </tr>`
+                                //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..  
+                                const newTableRowObject = $(newTableRow);//string olan newTableRow u Jquery objesi haline getir. ki tabloya ekleyeb.
+                                newTableRowObject.hide();
+                                $('#categoriesTable').append(newTableRowObject); //tablomuza satırı eklıyoruz...
+                                newTableRowObject.fadeIn(3500);//eklenen satırın görünme hızını ayarlıyoruz...
+                                toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'Başarılı İşlem!');
+
+                            }
                         });
 
                     });
