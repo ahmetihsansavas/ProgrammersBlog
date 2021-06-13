@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
@@ -70,5 +71,24 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return Json(categoryAddAjaxErrorModel);
 
         }
+
+
+        public async Task<JsonResult> GetAllCategories() 
+        {
+            var result = await _categoryService.GetAll();
+            var categories = JsonSerializer.Serialize(result.Data,new JsonSerializerOptions() 
+            {
+                //Category içeris. Article old. icin sorun yasamamak icin opt. ekliyoruz.
+                ReferenceHandler = ReferenceHandler.Preserve
+            
+            });
+
+            return Json(categories);
+        }
+
+
+
+
+
     }
 }

@@ -13,6 +13,9 @@
             Kategoriler
         </div>
         <div class="card-body">
+            <div class="spinner-border" role="status" style="display:none;">
+                <span class="sr-only">Yükleniyor...</span>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="categoriesTable" width="100%" cellspacing="0">
                     <thead>
@@ -102,7 +105,48 @@
                             text: 'Yenile',
                             className: 'btn btn-warning',
                             action: function (e, dt, node, config) {
-                                alert('Yenile butonuna basıldı.');
+                                $.ajax({ //butonumuz içeris. calıs. olan jquery metodunu yazıy.
+                                    type: 'GET', //yap. get post put vb gibi islemi seciyoruz.
+                                    url: '@Url.Action("GetAllCategories","Category")', //verileri nered. alıcag. url yi ayarl.
+                                    contentType: "application/json", //gelic. olan veri tipini belrit. xml de olab.
+                                    beforeSend: function () { //get isle. yap. hemen önce calıs. olan fonk. tanımla.
+                                        $('#categoriesTable').hide();
+                                        $('.spinner-border').show();
+                                    },
+                                    success: function (data) { //get islemi bas. old. sonra ki calıs. kısım.
+                                        const categoryListDto = jQuery.parseJSON(data); //Cont. icers. yazm. old. metotdan gelen veriyi ald. sonra parse edi.
+                                        console.log( categoryListDto);
+                                        if (categoryListDto.ResultStatus === 0) {//veriler bas. sek. gelmis demektir.
+                                            let tableBody = ""; //verileri dold. degis.
+                                            $.each(categoryListDto.Categories.$values, function (index, category) { //gelen verileri Json içeris. seciyoruz ve foreach ile dön.
+                                                tableBody += `
+                                                  <tr>
+                                                     <td>${category.Id}</td>
+                                                     <td>${category.Name}</td>
+                                                     <td>${category.Description}</td>
+                                                     <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
+                                                     <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                                     <td>${category.Note}</td>
+                                                     <td>${convertToShortDate(category.CreatedDate)}</td>
+                                                     <td>${category.CreatedByName}</td>
+                                                     <td>${convertToShortDate(category.ModifiedDate.ToShortDateString)}</td>
+                                                     <td>${category.ModifiedbyName}</td>
+                                                  </tr>`
+                                            });
+                                            $('#categoriesTable > tbody').replaceWith(tableBody); //daha sonra tabl. içeris. bos olan tbody kısmı tablebody ile degis.
+                                            $('.spinner-border').hide(); //yükleniyor spinner ı kapatıyoruz.
+                                            $('#categoriesTable').fadeIn(1800); // tablomuz efektli bir sek. ekrana gel.
+                                        }
+                                        else {
+                                            toastr.error(`${categoryListDto.Message}`, 'Islem basarısız!');
+                                            alert(`${categoryListDto.Message}`);
+                                        }
+                                    },
+                                    error: function (err) { //get isle. hatalı old. sonra calıs. kısım
+                                        console.log(err);
+                                        toastr.error(`${err}`, 'Islem basarısız!');
+                                    }
+                                });
                             }
                         }
                     ],
@@ -327,7 +371,7 @@
                             console.log(isValid);
                             if (isValid) {
                                 placeHolderDiv.find('.modal').modal('hide');
-                                const newTableRow = ` 
+                                const newTableRow = `
                             <tr>
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
@@ -340,7 +384,7 @@
                                 <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedbyName}</td>
                             </tr>`
-                                //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..  
+                                //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..
                                 const newTableRowObject = $(newTableRow);//string olan newTableRow u Jquery objesi haline getir. ki tabloya ekleyeb.
                                 newTableRowObject.hide();
                                 $('#categoriesTable').append(newTableRowObject); //tablomuza satırı eklıyoruz...
