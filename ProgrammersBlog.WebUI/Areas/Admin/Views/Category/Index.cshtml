@@ -228,7 +228,7 @@
                             "add": "Koşul Ekle",
                             "button": {
                                 "0": "Arama Oluşturucu",
-                                "_": "Arama Oluşturucu (%d)"
+                                "_": "Arama Oluşturucu (%dUrl"
                             },
                             "condition": "Koşul",
                             "conditions": {
@@ -388,6 +388,7 @@
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
                                 <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedbyName}</td>
+                                
                             </tr>`
                                 //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..
                                 const newTableRowObject = $(newTableRow);//string olan newTableRow u Jquery objesi haline getir. ki tabloya ekleyeb.
@@ -412,7 +413,57 @@
                     });
 
                 });
+                @* Ajax POST / Getting the FormData as CategoryAddDto ends here *@
+                @* Ajax POST / Deleting a Category starts here *@
+                $(document).on('click', '.btn-delete', function (event) {
+                    event.preventDefault();
+                    const id = $(this).attr("data-id"); // silme butonuna bas. kategorinin id değer. almak icin..
+                    Swal.fire({ //projemize ekled. sweetalert kütüph. kodları
+                        title: 'Silmek istediğinize emin misiniz?',
+                        text: "Seçili kategori silinicektir!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Evet,silmek istiyorum!!',
+                        cancelButtonText:'Hayır,silmek istemiyorum.'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { categoryId: id },
+                                url: '@Url.Action("Delete","Category")',
+                                success: function (data) {
+                                    const result = jQuery.parseJSON(data);
+                                    if (result.ResultStatus === 0) { //silme isl. basa. old. zaman
+                                        Swal.fire( //sweetalert kütüp. basarılı islemde cıkacak olan alert
+                                            'Silindi!',
+                                            'Seçili kategori başarıyla silimiştir.',
+                                            'success'
+                                        );
+                                        const tableRow = $(`[name="${id}"]`); //silinen kategori satırını seciyoruz
+                                        console.log(tableRow);
+                                        tableRow.fadeOut(3500); //efektli olarak ekrandan git.
+                                    }
+                                    else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Bir hata olustu.',
+                                            text: `${result.Message}`,
+                                            footer: '<a href="">Why do I have this issue?</a>'
+                                        })
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
 
+
+                            });
+                        }
+                    })
+                });
             });
         </script>
 
