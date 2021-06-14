@@ -13,10 +13,12 @@ namespace ProgrammersBlog.Services.AutoMapper.Profiles
     {
         public CategoryProfile()
         {
+            //Oto. Dönüşüm yap. olan metod ilk önce kaynak class sonra yap. istenen class ismi
             CreateMap<CategoryAddDto, Category>().ForMember(dest => dest.CreatedDate,
                 opt => opt.MapFrom(x => DateTime.Now));
             CreateMap<CategoryUpdateDto, Category>().ForMember(dest => dest.ModifiedDate,
                opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryUpdateDto, Category>();
 
         }
     }

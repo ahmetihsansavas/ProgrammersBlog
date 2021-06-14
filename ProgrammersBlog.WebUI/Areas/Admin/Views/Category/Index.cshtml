@@ -63,8 +63,8 @@
                                 <td>@category.ModifiedDate.ToShortDateString()</td>
                                 <td>@category.ModifiedbyName</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm"><span class="fas fa-edit"></span>Düzenle</button>
-                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@category.Id"><span class="fas fa-minus-circle"></span>Sil</button>
+                                    <button class="btn btn-primary btn-sm btn-block"><span class="fas fa-edit"></span>Düzenle</button>
+                                    <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="@category.Id"><span class="fas fa-minus-circle"></span>Sil</button>
                                 </td>
                             </tr>
 
@@ -137,8 +137,8 @@
                                                      <td>${convertToShortDate(category.ModifiedDate.ToShortDateString)}</td>
                                                      <td>${category.ModifiedbyName}</td>
                                                      <td>
-                                                         <button class="btn btn-primary btn-sm"><span class="fas fa-edit"></span>Düzenle</button>
-                                                         <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
+                                                         <button class="btn btn-primary btn-sm btn-block"><span class="fas fa-edit"></span>Düzenle</button>
+                                                         <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
                                                     </td>
                                                   </tr>`
                                             });
@@ -400,6 +400,10 @@
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
                                 <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
                                 <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedbyName}</td>
+                              <td>
+                                <button class="btn btn-primary btn-sm btn-block"><span class="fas fa-edit"></span>Düzenle</button>
+                                <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
+                              </td>
 
                             </tr>`
                                 //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..
