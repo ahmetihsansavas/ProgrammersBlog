@@ -24,7 +24,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         }
         public async Task <IActionResult> Index()
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllByNonDeleted();
 
             return View(result.Data);
            //if (result.ResultStatus == ResultStatus.Success)
@@ -75,7 +75,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
 
         public async Task<JsonResult> GetAllCategories() 
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllByNonDeleted();
             var categories = JsonSerializer.Serialize(result.Data,new JsonSerializerOptions() 
             {
                 //Category içeris. Article old. icin sorun yasamamak icin opt. ekliyoruz.
@@ -93,8 +93,8 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         public async Task<JsonResult> Delete(int categoryId) 
         {
             var result = await _categoryService.Delete(categoryId, "Ahmet");
-            var ajaxResult = JsonSerializer.Serialize(result);
-            return Json(ajaxResult);
+            var deletedCategory = JsonSerializer.Serialize(result.Data);
+            return Json(deletedCategory);
         
         
         }
