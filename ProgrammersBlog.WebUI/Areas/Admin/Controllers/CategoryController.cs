@@ -89,6 +89,14 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
 
 
 
-
+        [HttpPost]
+        public async Task<JsonResult> Delete(int categoryId) 
+        {
+            var result = await _categoryService.Delete(categoryId, "Ahmet");
+            var ajaxResult = JsonSerializer.Serialize(result);
+            return Json(ajaxResult);
+        
+        
+        }
     }
 }
