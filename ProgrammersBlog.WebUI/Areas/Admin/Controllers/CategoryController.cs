@@ -113,7 +113,38 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                //eğer eklenecek olan veride bir hata yoksa dn ye ekliyoruz daha sonra Success olan veriyi kull. tekrardan göst. icin
+                //Json'a donust. ve eklenen result verisinin datasını alıyoruz ve göst. olan sayfaya render ediyoruz.
+                var result = await _categoryService.Update(categoryUpdateDto, "Ahmet");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryUpdateAjaxModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel()
+                    {
+                        CategoryDto = result.Data,
+                        CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto)
 
+
+                    });
+                    return Json(categoryUpdateAjaxModel);
+                }
+            }
+
+
+            var categoryUpdateAjaxErrorModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel()
+            {
+                CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto),
+
+
+
+            });
+            return Json(categoryUpdateAjaxErrorModel);
+
+        }
 
 
     }
