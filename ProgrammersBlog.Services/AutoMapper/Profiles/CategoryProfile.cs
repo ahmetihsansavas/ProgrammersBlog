@@ -18,7 +18,7 @@ namespace ProgrammersBlog.Services.AutoMapper.Profiles
                 opt => opt.MapFrom(x => DateTime.Now));
             CreateMap<CategoryUpdateDto, Category>().ForMember(dest => dest.ModifiedDate,
                opt => opt.MapFrom(x => DateTime.Now));
-            CreateMap<CategoryUpdateDto, Category>();
+            CreateMap<Category, CategoryUpdateDto>(); // category sınıf. categoryUpdateDto sınıf. donusumu
 
         }
     }

@@ -50,7 +50,7 @@ namespace ProgrammersBlog.Shared.Data.Concrete.EntityFramework
             if (includeProperties.Any())
 
             {
-                foreach (var includeProperty in includeProperties)
+                foreach (var includeProperty in includeProperties) //eğer birden fazla sorgulama filt. varsa query e ekle
                 {
                     query = query.Include(includeProperty);
                 }
