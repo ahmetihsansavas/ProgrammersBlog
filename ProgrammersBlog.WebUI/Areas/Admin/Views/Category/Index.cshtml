@@ -120,7 +120,8 @@
                                     },
                                     success: function (data) { //get islemi bas. old. sonra ki calıs. kısım.
                                         const categoryListDto = jQuery.parseJSON(data); //Cont. icers. yazm. old. metotdan gelen veriyi ald. sonra parse edi.
-                                        console.log( categoryListDto);
+                                        console.log("gelen data categorylist")
+                                        console.log(categoryListDto);
                                         if (categoryListDto.ResultStatus === 0) {//veriler bas. sek. gelmis demektir.
                                             let tableBody = ""; //verileri dold. degis.
                                             $.each(categoryListDto.Categories.$values, function (index, category) { //gelen verileri Json içeris. seciyoruz ve foreach ile dön.

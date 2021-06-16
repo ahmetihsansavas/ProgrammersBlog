@@ -17,8 +17,7 @@ namespace ProgrammersBlog.DataAccess.Abstract
         IArticleRepository Articles { get; } //
         ICategoryRepository Categories { get; }
         ICommentRepository Comments { get; }
-        IRoleRepository Roles { get; }
-        IUserRepository Users { get; }
+
         Task<int> SaveAsync(); //Db ye kaydedilecek olan Transaction sayısı..
     }
 }
