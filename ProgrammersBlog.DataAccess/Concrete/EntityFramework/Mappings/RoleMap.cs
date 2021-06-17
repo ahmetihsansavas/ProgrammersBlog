@@ -26,8 +26,8 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
             builder.Property(r => r.ConcurrencyStamp).IsConcurrencyToken();
 
             // Limit the size of columns to use efficient database types
-            builder.Property(u => u.Name).HasMaxLength(256);
-            builder.Property(u => u.NormalizedName).HasMaxLength(256);
+            builder.Property(u => u.Name).HasMaxLength(100);
+            builder.Property(u => u.NormalizedName).HasMaxLength(100);
 
             // The relationships between Role and other entity types
             // Note that these relationships are configured with no navigation properties

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Entities.Concrete
 {
-    public class UserLogin :IdentityUserLogin<int>
+    public class UserLogin :IdentityUserLogin<int> //primary key int olsun
     {
     }
 }
