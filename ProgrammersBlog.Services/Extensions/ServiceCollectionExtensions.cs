@@ -2,6 +2,7 @@
 using ProgrammersBlog.DataAccess.Abstract;
 using ProgrammersBlog.DataAccess.Concrete;
 using ProgrammersBlog.DataAccess.Concrete.EntityFramework.Contexts;
+using ProgrammersBlog.Entities.Concrete;
 using ProgrammersBlog.Services.Abstract;
 using ProgrammersBlog.Services.Concrete;
 using System;
@@ -18,6 +19,7 @@ namespace ProgrammersBlog.Services.Extensions
         {
             //WebUI kısmında Startup.cs içeris.de de yap. ancak biz düzenli olmasını isted. için yaptık.
             serviceCollection.AddDbContext<ProgrammersBlogContext>();
+            serviceCollection.AddIdentity<User, Role>().AddEntityFrameworkStores<ProgrammersBlogContext>();
             serviceCollection.AddScoped<IUnitOfWork, UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IArticleService, ArticleManager>();
