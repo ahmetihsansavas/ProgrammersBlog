@@ -27,8 +27,10 @@ namespace ProgrammersBlog.WebUI
                 //eðer ResultStatus === "success" gibi ResultStatus enum ý mýz varsa opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)),
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; //Ic ice olan objelerde objeler birb. referans ettiklerinde sorun yasamamak icin
             }); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
+            services.AddSession(); // kullanýcý oturumu ekl.
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
-            services.LoadMyServices();
+            services.LoadMyServices(); //ServiceCollectionExtensions class içeris. yazmýs old. metod
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,7 +41,7 @@ namespace ProgrammersBlog.WebUI
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages(); //Hata yasad. bize yardýmcý olacak
             }
-
+            app.UseSession(); // kullanýcý oturumu
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -48,7 +50,10 @@ namespace ProgrammersBlog.WebUI
                 RequestPath = "/StaticFiles"
             });
             app.UseRouting();
-
+            //projemize kimlik dogrulamayý eklemek icin. routing den sonra kull. cunkü routing calýt. sonra yetki sorgulama yapýlýr. 
+            app.UseAuthentication();
+            //yetki dogrulama
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute(
