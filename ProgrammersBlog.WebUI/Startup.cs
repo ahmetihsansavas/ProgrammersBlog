@@ -30,7 +30,22 @@ namespace ProgrammersBlog.WebUI
             services.AddSession(); // kullanýcý oturumu ekl.
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
             services.LoadMyServices(); //ServiceCollectionExtensions class içeris. yazmýs old. metod
-           
+            services.ConfigureApplicationCookie(options => 
+            {
+                options.LoginPath = new PathString("/Admin/User/Login"); //user giris path i
+                options.LogoutPath = new PathString("/Admin/User/Logout");// user cýkýs path i
+                options.Cookie = new CookieBuilder
+                {
+                    Name = "ProgrammersBlog", //cookie adý
+                    HttpOnly = true, //cookie bilg. ele gecirilmemesi icin
+                    SameSite = SameSiteMode.Strict, //cookie bilg. sadece kendi sitemizden geld. zaman. CSRF saldýrýnýn onune gecer. 
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest //Always olmalý,test asamasýnda old. icin býraktýk yoksa bir gucenlik acýgý
+                
+                };
+                options.SlidingExpiration = true; // kull. siteye girs. yapt. cookilerin zamanlý bir sek. tut.
+                options.ExpireTimeSpan = System.TimeSpan.FromDays(7); //cookie nin silinme süresi
+                options.AccessDeniedPath = new PathString("/Admin/User/AccessDenied"); //yetkisi olmayan bir yere giris yap. kull. icin
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
