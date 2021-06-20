@@ -49,14 +49,14 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             //ahmetsavas 
            // string fileName = Path.GetFileNameWithoutExtension(userAddDto.Picture.FileName); //dosya adını uzantısı olmadan alma
                                                                                              //  .png
-            string fileExtension = Path.GetExtension(userAddDto.Picture.FileName);
+            string fileExtension = Path.GetExtension(userAddDto.PictureFile.FileName);
             DateTime dateTime = DateTime.Now;
             // AhmetSavas_587_38_12_3_10_2021.png
             string fileName = $"{userAddDto.UserName}_{dateTime.FullDateAndTimeStringwithUnderscore()}{fileExtension}";
             var path = Path.Combine($"{wwroot}/img",fileName); //resim dosyasının kayd. path
             await using(var stream = new FileStream(path,FileMode.Create))
             {
-                await userAddDto.Picture.CopyToAsync(stream);
+                await userAddDto.PictureFile.CopyToAsync(stream);
             }
 
             return fileName;
