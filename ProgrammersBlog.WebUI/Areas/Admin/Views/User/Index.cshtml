@@ -345,9 +345,9 @@
 
                 });
                 @* DataTables ends here*@
-                @* Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here. *@
+                @* Ajax GET / Getting the _UserAddPartial as Modal Form starts from here. *@
                 $(function () {
-                    const url = '@Url.Action("Add","Category")';
+                    const url = '@Url.Action("Add","User")';
                     const placeHolderDiv = $('#modalPlaceHolder');
                     $("#btnAdd").click(function () {
                         $.get(url).done(function (data) {

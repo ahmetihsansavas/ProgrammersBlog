@@ -30,5 +30,12 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                  
             }) ;
         }
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return PartialView("_UserAddPArtial");
+        }
+
     }
 }
