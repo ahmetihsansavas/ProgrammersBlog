@@ -46,10 +46,10 @@
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
                                 <td>@user.PhoneNumber</td>
-                                <td>@user.Picture</td>
+                                <td><img src="~/img/@user.Picture" alt="@user.UserName" style="max-height:50px; max-width:50px;" /> </td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm btn-block btn-update" data-id="@user.Id"><span class="fas fa-edit"></span>Düzenle</button>
-                                    <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span>Sil</button>
+                                    <button class="btn btn-primary btn-sm btn-update" data-id="@user.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span></button>
                                 </td>
                             </tr>
 
@@ -74,8 +74,8 @@
     @section Scripts
 {
         <script>
-            $(document).ready(function () {
-                $('#usersTable').DataTable({
+              $(document).ready(function () {
+                  const dataTable = $('#usersTable').DataTable({
                     dom:
                         "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
                         "<'row'<'col-sm-12'tr>>" +
@@ -123,8 +123,8 @@
                                                      <td>${convertToShortDate(category.ModifiedDate)}</td>
                                                      <td>${category.ModifiedbyName}</td>
                                                      <td>
-                                                         <button class="btn btn-primary btn-sm btn-block btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span>Düzenle</button>
-                                                         <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
+                                                         <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span>Düzenle</button>
+                                                         <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
                                                     </td>
                                                   </tr>`
                                             });
@@ -357,76 +357,74 @@
                         });
 
                     });
-                @* Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here. *@
-                    @* Ajax POST / Posting the FormData as CategoryAddDto  starts from here. *@
-                    placeHolderDiv.on('click','#btnSave', function (event) {
+                @* Ajax GET / Getting the _UserAddPartial as Modal Form ends  here. *@
+                    @* Ajax POST / Posting the FormData as UserAddDto  starts from here. *@
+                    placeHolderDiv.on('click', '#btnSave', function (event) {
                         event.preventDefault(); //.net taraf. butonun submit yapıp sayf. yenilememesi icin butonun tıklanmasını engell.
-                        const form = $('#form-category-add'); // _CategoryAddPartial da ki formu seciyoruz.
+                        const form = $('#form-user-add'); // _UserAddPartial da ki formu seciyoruz.
                         const actionUrl = form.attr('action'); // Formun içeris. bulunan action ı seciyoruz..
-                        const dataToSend = form.serialize(); //Gönd. olan datayı formu serilest. seciyoruz..
-                        $.post(actionUrl, dataToSend).done(function (data) {
-                            console.log("1." + data);
-                            const categoryAddAjaxModel = jQuery.parseJSON(data);//bizlere(Controllerdan) return isleminden gelen data yı parse etmek istiyoruz
-                            console.log(categoryAddAjaxModel);
-                            const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial); //Form da gönd olan verilerin  veya hatalı yelerin kullanıcıya göst. icin
-                            placeHolderDiv.find('.modal-body').replaceWith(newFormBody);//eski formu yenisi ile degist.
-                            const isValid = newFormBody.find('[name="IsValid"]').val() === 'True'; //formumuzdaki kont icin yazd. IsValid in degerini alıyoruz.
-                            console.log(isValid);
-                            if (isValid) {
-                                placeHolderDiv.find('.modal').modal('hide');
-                                const newTableRow = `
-                            <tr name="${categoryAddAjaxModel.CategoryDto.Category.Id}">
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
-                                <td>${convertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
-                                <td>${convertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
-                                <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.CreatedDate)}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
-                                <td>${convertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
-                                <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedbyName}</td>
-                              <td>
-                                <button class="btn btn-primary btn-sm btn-block btn-update" data-id="${categoryAddAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-edit"></span>Düzenle</button>
-                                <button class="btn btn-danger btn-sm btn-block btn-delete" data-id="${categoryAddAjaxModel.CategoryDto.Category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
-                              </td>
-
-                            </tr>`
-                                //DataTAble a yeni bir satır ekliyoruz ve bunu da verileri yazdırdığımız gibi süslü parantezlerle yapıyoruz..
-                                const newTableRowObject = $(newTableRow);//string olan newTableRow u Jquery objesi haline getir. ki tabloya ekleyeb.
-                                newTableRowObject.hide();
-                                $('#categoriesTable').append(newTableRowObject); //tablomuza satırı eklıyoruz...
-                                newTableRowObject.fadeIn(3500);//eklenen satırın görünme hızını ayarlıyoruz...
-                                toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'Başarılı İşlem!');
-                                Swal.fire({
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Başarılı işlem',
-                                    text: `${categoryAddAjaxModel.CategoryDto.Message}`,
-                                    showConfirmButton: false,
-                                    timer: 3500
-                                });
+                        const dataToSend = new FormData(form.get(0)); //Gönd. olan datayı formu  seciyoruz..
+                        $.ajax({
+                            url: actionUrl,
+                            type: "POST",
+                            data: dataToSend,
+                            processData: false,
+                            contentType:false,
+                            success: function (data) {
+                                console.log( data);
+                                const userAddAjaxModel = jQuery.parseJSON(data);//bizlere(Controllerdan) return isleminden gelen data yı parse etmek istiyoruz
+                                console.log(userAddAjaxModel);
+                                const newFormBody = $('.modal-body', userAddAjaxModel.UserAddPartial); //Form da gönd olan verilerin  veya hatalı yelerin kullanıcıya göst. icin
+                                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);//eski formu yenisi ile degist.
+                                const isValid = newFormBody.find('[name="IsValid"]').val() === 'True'; //formumuzdaki kont icin yazd. IsValid in degerini alıyoruz.
+                                console.log(isValid);
+                                if (isValid) {
+                                    placeHolderDiv.find('.modal').modal('hide');
+                                    dataTable.row.add([
+                                        userAddAjaxModel.UserDto.User.Id,
+                                        userAddAjaxModel.UserDto.User.UserName,
+                                        userAddAjaxModel.UserDto.User.Email,
+                                        userAddAjaxModel.UserDto.User.PhoneNumber,
+                                       ` <img src="~/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" style="max-height:50px; max-width:50px;" />`,
+                                ` <td>
+                                    <button class="btn btn-primary btn-sm  btn-update" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm  btn-delete" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-minus-circle"></span></button>
+                                </td>`
+                                    ]).draw();
+                                    toastr.success(`${userAddAjaxModel.UserDto.Message}`, 'Başarılı İşlem!');
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Başarılı işlem',
+                                        text: `${userAddAjaxModel.UserDto.Message}`,
+                                        showConfirmButton: false,
+                                        timer: 3500
+                                    });
 
 
+                                }
+                                else {
+                                    //eğer kayd. veride herhan. bir hata varsa validation summary ksımında en yukarıda göreceğiz..
+                                    let summaryText = "";
+                                    $('#validation-summary > ul > li').each(function () {
+                                        let text = $(this).text();
+                                        summaryText = `*${text}\n`;
+                                    });
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Bir hata olustu.',
+                                        text: summaryText,
+                                        footer: '<a href="">Why do I have this issue?</a>'
+                                    });
+                                    toastr.warning(summaryText);
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
                             }
-                            else
-                            {
-                                //eğer kayd. veride herhan. bir hata varsa validation summary ksımında en yukarıda göreceğiz..
-                                let summaryText = "";
-                                $('#validation-summary > ul > li').each(function () {
-                                    let text = $(this).text();
-                                    summaryText = `*${text}\n`;
-                                });
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Bir hata olustu.',
-                                    text: summaryText,
-                                    footer: '<a href="">Why do I have this issue?</a>'
-                                });
-                                toastr.warning(summaryText);
-                            }
-                        });
 
+
+                    });
                     });
 
                 });
@@ -436,7 +434,7 @@
                     event.preventDefault();
                     const id = $(this).attr("data-id"); // silme butonuna bas. kategorinin id değer. almak icin..
                     const tableRow = $(`[name="${id}"]`); //silinen kategori satırını seciyoruz..
-                    const categoryName = tableRow.find('td:eq(1)').text(); // ikinci sıradaki td kateg. name ini verd. için 
+                    const categoryName = tableRow.find('td:eq(1)').text(); // ikinci sıradaki td kateg. name ini verd. için
                     console.log(tableRow);
                     Swal.fire({ //projemize ekled. sweetalert kütüph. kodları
                         title: 'Silmek istediğinize emin misiniz?',

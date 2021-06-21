@@ -6,6 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using ProgrammersBlog.Services.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Extensions;
+using ProgrammersBlog.WebUI.AutoMapper.Profiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +29,7 @@ namespace ProgrammersBlog.WebUI
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; //Ic ice olan objelerde objeler birb. referans ettiklerinde sorun yasamamak icin
             }); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
             services.AddSession(); // kullanýcý oturumu ekl.
-            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
+            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
             services.LoadMyServices(); //ServiceCollectionExtensions class içeris. yazmýs old. metod
             services.ConfigureApplicationCookie(options => 
             {
