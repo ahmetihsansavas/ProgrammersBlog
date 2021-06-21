@@ -46,7 +46,7 @@
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
                                 <td>@user.PhoneNumber</td>
-                                <td><img src="~/img/@user.Picture" alt="@user.UserName" style="max-height:50px; max-width:50px;" /> </td>
+                                <td><img src="~/img/@user.Picture" alt="@user.UserName" class="my-image-table" /> </td>
                                 <td>
                                     <button class="btn btn-primary btn-sm btn-update" data-id="@user.Id"><span class="fas fa-edit"></span></button>
                                     <button class="btn btn-danger btn-sm btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span></button>
@@ -423,8 +423,8 @@
                     });
 
                 });
-                @* Ajax POST / Getting the FormData as CategoryAddDto ends here *@
-                @* Ajax POST / Deleting a Category starts here *@
+                @* Ajax POST / Getting the FormData as UserAddDto ends here *@
+                @* Ajax POST / Deleting a User starts here *@
                 $(document).on('click', '.btn-delete', function (event) {
                     event.preventDefault();
                     const id = $(this).attr("data-id"); // silme butonuna bas. user id değer. almak icin..
@@ -485,12 +485,12 @@
 
 
                 $(function () {
-                    const url = '/Admin/Category/Update/';
+                    const url = '/Admin/User/Update/';
                     const placeHolderDiv = $('#modalPlaceHolder');
                     $(document).on('click', '.btn-update', function (event) {
                         event.preventDefault();
                         const id = $(this).attr('data-id');
-                        $.get(url, { categoryId: id }).done(function (data) {
+                        $.get(url, { userId: id }).done(function (data) {
                             placeHolderDiv.html(data);
                             console.log(data);
                             placeHolderDiv.find('.modal').modal('show');
@@ -504,14 +504,14 @@
                         });
                     });
 
-                    @* Ajax POST / Updating Category starts from here *@
+                    @* Ajax POST / Updating User starts from here *@
                     placeHolderDiv.on('click', '#btnUpdate', function (event) {
                         event.preventDefault();
-                        const form = $('#form-category-update');
+                        const form = $('#form-user-update');
                         const actionUrl = form.attr('action');
                         const dataToSend = form.serialize();//categoryUpdateDto halinde alıc.
                         $.post(actionUrl, dataToSend).done(function (data) {
-                            const categoryUpdateAjaxModel = jQuery.parseJSON(data);
+                            const userUpdateAjaxModel = jQuery.parseJSON(data);
                             console.log(categoryUpdateAjaxModel);
                             const newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial);
                             placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
