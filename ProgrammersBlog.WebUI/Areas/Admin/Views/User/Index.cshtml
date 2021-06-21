@@ -97,50 +97,45 @@
                             action: function (e, dt, node, config) {
                                 $.ajax({ //butonumuz içeris. calıs. olan jquery metodunu yazıy.
                                     type: 'GET', //yap. get post put vb gibi islemi seciyoruz.
-                                    url: '@Url.Action("GetAllCategories","Category")', //verileri nered. alıcag. url yi ayarl.
+                                    url: '@Url.Action("GetAllUsers","User")', //verileri nered. alıcag. url yi ayarl.
                                     contentType: "application/json", //gelic. olan veri tipini belrit. xml de olab.
                                     beforeSend: function () { //get isle. yap. hemen önce calıs. olan fonk. tanımla.
-                                        $('#categoriesTable').hide();
+                                        $('#usersTable').hide();
                                         $('.spinner-border').show();
                                     },
                                     success: function (data) { //get islemi bas. old. sonra ki calıs. kısım.
-                                        const categoryListDto = jQuery.parseJSON(data); //Cont. icers. yazm. old. metotdan gelen veriyi ald. sonra parse edi.
-                                        console.log("gelen data categorylist")
-                                        console.log(categoryListDto);
-                                        if (categoryListDto.ResultStatus === 0) {//veriler bas. sek. gelmis demektir.
-                                            let tableBody = ""; //verileri dold. degis.
-                                            $.each(categoryListDto.Categories.$values, function (index, category) { //gelen verileri Json içeris. seciyoruz ve foreach ile dön.
-                                                tableBody += `
-                                                  <tr name="${category.Id}">
-                                                     <td>${category.Id}</td>
-                                                     <td>${category.Name}</td>
-                                                     <td>${category.Description}</td>
-                                                     <td>${convertFirstLetterToUpperCase(category.IsActive.toString())}</td>
-                                                     <td>${convertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
-                                                     <td>${category.Note}</td>
-                                                     <td>${convertToShortDate(category.CreatedDate)}</td>
-                                                     <td>${category.CreatedByName}</td>
-                                                     <td>${convertToShortDate(category.ModifiedDate)}</td>
-                                                     <td>${category.ModifiedbyName}</td>
-                                                     <td>
-                                                         <button class="btn btn-primary btn-sm btn-update" data-id="${category.Id}"><span class="fas fa-edit"></span>Düzenle</button>
-                                                         <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span>Sil</button>
-                                                    </td>
-                                                  </tr>`
+                                        const userListDto = jQuery.parseJSON(data); //Cont. icers. yazm. old. metotdan gelen veriyi ald. sonra parse edi.
+                                        dataTable.clear();
+                                        console.log("gelen data userlist")
+                                        console.log(userListDto);
+                                        if (userListDto.ResultStatus === 0) {//veriler bas. sek. gelmis demektir.
+                                          
+                                            $.each(userListDto.Users.$values, function (index, user) { //gelen verileri Json içeris. seciyoruz ve foreach ile dön.
+                                                dataTable.row.add([
+                                                        user.Id,
+                                                        user.UserName,
+                                                        user.Email,
+                                                        user.PhoneNumber,
+                                                    ` <img src="/img/${user.Picture}" alt="${user.UserName}" style="max-height:50px; max-width:50px;" />`,
+                                                    ` 
+                                    <button class="btn btn-primary btn-sm  btn-update" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm  btn-delete" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>
+                                                    `
+                                                ]);
                                             });
-                                            $('#categoriesTable > tbody').replaceWith(tableBody); //daha sonra tabl. içeris. bos olan tbody kısmı tablebody ile degis.
+                                            dataTable.draw();
                                             $('.spinner-border').hide(); //yükleniyor spinner ı kapatıyoruz.
-                                            $('#categoriesTable').fadeIn(1800); // tablomuz efektli bir sek. ekrana gel.
+                                            $('#usersTable').fadeIn(1800); // tablomuz efektli bir sek. ekrana gel.
                                         }
                                         else {
-                                            toastr.error(`${categoryListDto.Message}`, 'Islem basarısız!');
-                                            alert(`${categoryListDto.Message}`);
+                                            toastr.error(`${userListDto.Message}`, 'Islem basarısız!');
+                                            alert(`${userListDto.Message}`);
                                         }
                                     },
                                     error: function (err) { //get isle. hatalı old. sonra calıs. kısım
                                         console.log(err);
                                         $('.spinner-border').hide(); //yükleniyor spinner ı kapatıyoruz.
-                                        $('#categoriesTable').fadeIn(1800); // tablomuz efektli bir sek. ekrana gel.
+                                        $('#usersTable').fadeIn(1800); // tablomuz efektli bir sek. ekrana gel.
                                         toastr.error(`${err}`, 'Islem basarısız!');
                                         Swal.fire({
                                             icon: 'error',
@@ -385,11 +380,11 @@
                                         userAddAjaxModel.UserDto.User.UserName,
                                         userAddAjaxModel.UserDto.User.Email,
                                         userAddAjaxModel.UserDto.User.PhoneNumber,
-                                       ` <img src="~/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" style="max-height:50px; max-width:50px;" />`,
-                                ` <td>
-                                    <button class="btn btn-primary btn-sm  btn-update" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-edit"></span></button>
-                                    <button class="btn btn-danger btn-sm  btn-delete" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-minus-circle"></span></button>
-                                </td>`
+                                       ` <img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.UserName}" style="max-height:50px; max-width:50px;" />`,
+                                       ` 
+                                    <button class="btn btn-primary btn-sm  btn-update" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm  btn-delete" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>
+                                       `
                                     ]).draw();
                                     toastr.success(`${userAddAjaxModel.UserDto.Message}`, 'Başarılı İşlem!');
                                     Swal.fire({
