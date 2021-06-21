@@ -427,13 +427,13 @@
                 @* Ajax POST / Deleting a Category starts here *@
                 $(document).on('click', '.btn-delete', function (event) {
                     event.preventDefault();
-                    const id = $(this).attr("data-id"); // silme butonuna bas. kategorinin id değer. almak icin..
-                    const tableRow = $(`[name="${id}"]`); //silinen kategori satırını seciyoruz..
-                    const categoryName = tableRow.find('td:eq(1)').text(); // ikinci sıradaki td kateg. name ini verd. için
+                    const id = $(this).attr("data-id"); // silme butonuna bas. user id değer. almak icin..
+                    const tableRow = $(`[name="${id}"]`); //silinen user satırını seciyoruz..
+                    const userName = tableRow.find('td:eq(1)').text(); // ikinci sıradaki td user. name ini verd. için
                     console.log(tableRow);
                     Swal.fire({ //projemize ekled. sweetalert kütüph. kodları
                         title: 'Silmek istediğinize emin misiniz?',
-                        text: `${categoryName} adlı kategori silinicektir!`,
+                        text: `${userName} adlı kategori silinicektir!`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -445,24 +445,24 @@
                             $.ajax({
                                 type: 'POST',
                                 dataType: 'json',
-                                data: { categoryId: id },
-                                url: '@Url.Action("Delete","Category")',
+                                data: { userId: id },
+                                url: '@Url.Action("Delete","User")', // /Admin/User/Delete/
                                 success: function (data) {
-                                    const categoryDto = jQuery.parseJSON(data);
-                                    if (categoryDto.ResultStatus === 0) { //silme isl. basa. old. zaman
+                                    const userDto = jQuery.parseJSON(data);
+                                    if (userDto.ResultStatus === 0) { //silme isl. basa. old. zaman
                                         Swal.fire( //sweetalert kütüp. basarılı islemde cıkacak olan alert
                                             'Silindi!',
-                                            `${categoryDto.Category.Name} adlı kategori başarıyla silinmiştir.`,
+                                            `${userDto.User.UserName} adlı kullanıcı başarıyla silinmiştir.`,
                                             'success'
                                         );
 
-                                        tableRow.fadeOut(3500); //efektli olarak ekrandan git.
+                                        dataTable.row(tableRow).remove().draw(); //efektli olarak ekrandan git.
                                     }
                                     else {
                                         Swal.fire({
                                             icon: 'error',
                                             title: 'Bir hata olustu.',
-                                            text: `${categoryDto.Message}`,
+                                            text: `${userDto.Message}`,
                                             footer: '<a href="">Why do I have this issue?</a>'
                                         });
                                     }

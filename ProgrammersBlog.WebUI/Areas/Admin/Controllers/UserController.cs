@@ -42,6 +42,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             }) ;
         }
 
+        
         public async Task<JsonResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -118,6 +119,37 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             }) ;
 
             return Json(userAddajaxModelStateErrorModel);
+        }
+
+        public async Task<JsonResult> Delete(int userId) 
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                var deletedUser = JsonSerializer.Serialize(new UserDto 
+                {
+                     ResultStatus = ResultStatus.Success,
+                     Message = $"{user.UserName} adlı kullanıcı başarıyla silinmiştir. "
+                });
+                return Json(deletedUser);
+            }
+            else 
+            {
+                string errorMessages = String.Empty;
+                foreach (var error in result.Errors)
+                {
+                    errorMessages = $"*{error.Description}\n";
+                }
+                var deletedUserErrorModel = JsonSerializer.Serialize(new UserDto
+                {
+                    ResultStatus = ResultStatus.Error,
+                    Message = $"{user.UserName} adlı kullanıcı silinirken bazı hatalar olustu.",
+                    User = user
+                });
+                return Json(deletedUserErrorModel);
+            }
+        
         }
 
         public async Task<string> ImageUpload(UserAddDto userAddDto) 
