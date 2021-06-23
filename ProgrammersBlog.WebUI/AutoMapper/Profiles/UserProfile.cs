@@ -14,6 +14,7 @@ namespace ProgrammersBlog.WebUI.AutoMapper.Profiles
         {
             CreateMap<UserAddDto, User>(); //UserAddDto dan alac. verilerle bir User olust. isti.
             CreateMap<User, UserUpdateDto>();
+            CreateMap<UserUpdateDto, User>();
         }
     }
 }

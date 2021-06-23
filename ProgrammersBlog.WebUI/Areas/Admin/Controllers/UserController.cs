@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                userAddDto.Picture = await ImageUpload(userAddDto); //kull. resim dosyasının adını db de tutuyoruz.
+                userAddDto.Picture = await ImageUpload(userAddDto.UserName,userAddDto.PictureFile); //kull. resim dosyasının adını db de tutuyoruz.
                 var user =  _mapper.Map<User>(userAddDto); //userAddDto kull AutoMApper ile User nesnesi olust.
                 var result = await _userManager.CreateAsync(user, userAddDto.Password); //result döner
                 if (result.Succeeded)
@@ -152,6 +153,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         }
 
+        [HttpGet]
         public async Task<PartialViewResult> Update(int userId) 
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u=>u.Id==userId);
@@ -160,22 +162,81 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         
         }
+        [HttpPost]
+        public async Task<IActionResult> Update(UserUpdateDto userUpdateDto) 
+        {
+            if (ModelState.IsValid) //kayd. olan datalar dogru mu ???
+            {
+                bool isNewPictureUploaded = false; //yeni resim bilgisi
+                var oldUser = await _userManager.FindByIdAsync(userUpdateDto.Id.ToString()); //degist. olan kullanıcı
+                var oldUserPicture = oldUser.Picture; //kullanıcının eski resmi
+                if (userUpdateDto.PictureFile!=null)
+                {
+                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName,userUpdateDto.PictureFile); //kull yeni resim eklemek isterse 
+                    isNewPictureUploaded = true;
+                }
+                var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser); //güncell. kullanıcı  user tipine dönüst.
+                var result = await _userManager.UpdateAsync(updatedUser); //db de güncellenir
+                if (result.Succeeded)
+                {
+                    if (isNewPictureUploaded)
+                    {
+                        ImageDelete(oldUserPicture);
+                    }
+                    var userUpdateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
+                    {
+                        UserDto = new UserDto
+                        {
+                            ResultStatus = ResultStatus.Success,
+                            Message = $"{updatedUser.UserName} adlı kullanıcı basarıyla güncellenmistir.",
+                            User = updatedUser
+                        },
+                        UserUpdatePartial = await this.RenderViewToStringAsync("_UserUpdatePartial", userUpdateDto)
+                    }) ;
+                    return Json(userUpdateViewModel);
+                }
+                else 
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    var userUpdateErrorViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
+                    {
+                        UserUpdateDto = userUpdateDto,
+                        UserUpdatePartial = await this.RenderViewToStringAsync("_UserUpdatePartial", userUpdateDto)
+                    });
+                    return Json(userUpdateErrorViewModel);
+                }
+            
+            }
+            else
+            {
+                var userUpdateErrorModelStateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
+                {
+                    UserUpdateDto = userUpdateDto,
+                    UserUpdatePartial = await this.RenderViewToStringAsync("_UserUpdatePartial", userUpdateDto)
+                });
+                return Json(userUpdateErrorModelStateViewModel);
+            }
+        
+        }
 
-        public async Task<string> ImageUpload(UserAddDto userAddDto) 
+        public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
         {
             // ~/img/user.Picture
             string wwroot = _env.WebRootPath;
             //ahmetsavas 
-           // string fileName = Path.GetFileNameWithoutExtension(userAddDto.Picture.FileName); //dosya adını uzantısı olmadan alma
+           // string fileName = Path.GetFileNameWithoutExtension(picture.FileName); //dosya adını uzantısı olmadan alma
                                                                                              //  .png
-            string fileExtension = Path.GetExtension(userAddDto.PictureFile.FileName);
+            string fileExtension = Path.GetExtension(pictureFile.FileName);
             DateTime dateTime = DateTime.Now;
             // AhmetSavas_587_38_12_3_10_2021.png
-            string fileName = $"{userAddDto.UserName}_{dateTime.FullDateAndTimeStringwithUnderscore()}{fileExtension}";
+            string fileName = $"{userName}_{dateTime.FullDateAndTimeStringwithUnderscore()}{fileExtension}";
             var path = Path.Combine($"{wwroot}/img",fileName); //resim dosyasının kayd. path
             await using(var stream = new FileStream(path,FileMode.Create))
             {
-                await userAddDto.PictureFile.CopyToAsync(stream);
+                await pictureFile.CopyToAsync(stream);
             }
 
             return fileName;
