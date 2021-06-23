@@ -181,5 +181,21 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return fileName;
         }
 
+        public bool ImageDelete(string pictureName) //kull. edit isl. eski resmi silmek icin kull.
+        {
+            string wwwroot = _env.WebRootPath;
+            var fileToDelete = Path.Combine($"{wwwroot}/img", pictureName);
+            if (System.IO.File.Exists(fileToDelete)) //böyle bir dosya var mı
+            {
+                System.IO.File.Delete(fileToDelete); //dosyayı silme
+                return true;
+            }
+            else 
+            {
+                return false;
+            }
+        
+        }
+
     }
 }
