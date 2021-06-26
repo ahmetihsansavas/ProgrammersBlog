@@ -42,8 +42,13 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                  
             }) ;
         }
+        [HttpGet]
+        public IActionResult UserLogin() 
+        {
+            return View();
+        }
 
-        
+
         public async Task<JsonResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
