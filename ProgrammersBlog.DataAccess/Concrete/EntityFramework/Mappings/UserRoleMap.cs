@@ -19,6 +19,19 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
             // Maps to the AspNetUserRoles table
             builder.ToTable("AspNetUserRoles");
 
+            builder.HasData(
+                new UserRole 
+                {
+                    RoleId = 1, 
+                    UserId = 1 
+                },
+                 new UserRole
+                 {
+                     RoleId = 2,
+                     UserId = 2
+                 }
+                );
+
         }
     }
 }
