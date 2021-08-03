@@ -62,7 +62,7 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
                 Picture = "defaultUser.png",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()//Alanı ve ilişkili kod, uygulamanıza ek bir güvenlik katmanı sağlar, parolanızı değiştirdiğinizde, oturum açtığınız tarayıcıdan oturumunuz açılır.
+                SecurityStamp = Guid.NewGuid().ToString()//Alanı ve ilişkili kod, uygulamanıza ek bir güvenlik katmanı sağlar, parolanızı değiştirdiğinizde, oturum açtığınız tarayıcıdan oturumunuz açılır.
 
             };
             adminUser.PasswordHash = CreatePasswordHash(adminUser,"adminuser");
@@ -77,7 +77,7 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
                 Picture = "defaultUser.png",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                SecurityStamp = new Guid().ToString()//Alanı ve ilişkili kod, uygulamanıza ek bir güvenlik katmanı sağlar, parolanızı değiştirdiğinizde, oturum açtığınız tarayıcıdan oturumunuz açılır.
+                SecurityStamp = Guid.NewGuid().ToString()//Alanı ve ilişkili kod, uygulamanıza ek bir güvenlik katmanı sağlar, parolanızı değiştirdiğinizde, oturum açtığınız tarayıcıdan oturumunuz açılır.
 
             };
 

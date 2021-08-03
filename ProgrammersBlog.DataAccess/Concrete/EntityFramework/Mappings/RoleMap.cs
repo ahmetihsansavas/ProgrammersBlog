@@ -43,14 +43,14 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
                     Id=1,
                     Name="Admin",
                     NormalizedName="ADMIN",
-                    ConcurrencyStamp = new Guid().ToString()
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
                   new Role
                   {
-                      Id = 1,
+                      Id = 2,
                       Name = "Edıtor",
                       NormalizedName = "EDITOR",
-                      ConcurrencyStamp = new Guid().ToString()
+                      ConcurrencyStamp = Guid.NewGuid().ToString()
                   }
                 );
 
