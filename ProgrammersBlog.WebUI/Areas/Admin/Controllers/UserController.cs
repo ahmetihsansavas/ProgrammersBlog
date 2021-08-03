@@ -35,7 +35,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             _signinManager = signinManager;
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -94,7 +94,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
            
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -116,7 +116,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Add()
         {
@@ -174,7 +174,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return Json(userAddajaxModelStateErrorModel);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Delete(int userId) 
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -205,7 +205,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             }
         
         }
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<PartialViewResult> Update(int userId) 
         {
@@ -215,7 +215,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         
         }
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto) 
         {
@@ -276,7 +276,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
         {
             // ~/img/user.Picture
@@ -297,7 +297,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return fileName;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public bool ImageDelete(string pictureName) //kull. edit isl. eski resmi silmek icin kull.
         {
             string wwwroot = _env.WebRootPath;

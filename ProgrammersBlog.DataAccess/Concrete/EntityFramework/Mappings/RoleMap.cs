@@ -48,7 +48,7 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Mappings
                   new Role
                   {
                       Id = 2,
-                      Name = "Edıtor",
+                      Name = "Editor",
                       NormalizedName = "EDITOR",
                       ConcurrencyStamp = Guid.NewGuid().ToString()
                   }
