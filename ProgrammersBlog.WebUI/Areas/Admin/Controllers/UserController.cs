@@ -314,5 +314,11 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         }
 
+        [HttpGet]
+        public ViewResult AccessDenied() 
+        {
+            return View();
+        }
+
     }
 }
