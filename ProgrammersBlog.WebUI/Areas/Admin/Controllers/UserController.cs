@@ -353,6 +353,48 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return View();  
         
         }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> PasswordChange(UserPasswordChangeDto userPasswordChangeDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var isVerified = await _userManager.CheckPasswordAsync(user, userPasswordChangeDto.CurrentPassword);
+                if (isVerified)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, userPasswordChangeDto.CurrentPassword,
+                        userPasswordChangeDto.NewPassword);
+                    var count = 0;
+                    if (result.Succeeded)
+                    {
+                        await _userManager.UpdateSecurityStampAsync(user); //Kull. ayarlar. değiş. yap. icin
+                        await _signinManager.SignOutAsync(); //Kull. sifresini degist. icin cıkıs yapmasını sagl.
+                        await _signinManager.PasswordSignInAsync(user, userPasswordChangeDto.NewPassword, true, false); //kull. giris yap.
+                        TempData.Add("SuccessMessage", $"Şifreniz basarıyla güncellenmistir.");
+                        count++;
+                        if (count >= 1)
+                        {
+                            TempData.Remove("SuccessMessage");
+                        }
+                        return View();
+                    }
+              
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Lütfen girmis old. şimdiki şifrenizi kontrol ediniz...");
+                    return View(userPasswordChangeDto);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Lütfen girmis old. şimdiki şifrenizi kontrol ediniz...");
+                return View(userPasswordChangeDto);
+            }
+            return View();
+
+        }
 
         [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
