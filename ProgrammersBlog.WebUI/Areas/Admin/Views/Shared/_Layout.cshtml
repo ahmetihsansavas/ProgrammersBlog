@@ -30,6 +30,13 @@
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
+                    @if (TempData["SucessMessage"]!= null)
+                    {
+                        <div class="alert alert-success mt-2" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                        @TempData.Remove("SuccessMessage");
+                    }
                     @RenderBody()
                 </div>
             </main>

@@ -291,8 +291,62 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User); //giris yap. kull. bilgilerini HttpContext.USer dan alıyoruz.
             var updateDto = _mapper.Map<UserUpdateDto>(user);
+            
             return View(updateDto);
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ViewResult> ChangeDetails(UserUpdateDto userUpdateDto)
+        {
+            if (ModelState.IsValid) //kayd. olan datalar dogru mu ???
+            {
+                bool isNewPictureUploaded = false; //yeni resim bilgisi
+                var oldUser = await _userManager.GetUserAsync(HttpContext.User); //degist. olan kullanıcı
+                var oldUserPicture = oldUser.Picture; //kullanıcının eski resmi
+                if (userUpdateDto.PictureFile != null)
+                {
+                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName, userUpdateDto.PictureFile); //kull yeni resim eklemek isterse 
+                    if (oldUserPicture!="defaultUser.png") //kull. resmi ortak kull. resim şartı
+                    {
+                        isNewPictureUploaded = true;
+                    }
+                   
+                }
+                var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser); //güncell. kullanıcı  user tipine dönüst.
+                var result = await _userManager.UpdateAsync(updatedUser); //db de güncellenir
+                var count = 0;
+                if (result.Succeeded)
+                {
+                    if (isNewPictureUploaded)
+                    {
+                        ImageDelete(oldUserPicture);
+                    }
+                    TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı basarıyla güncellenmistir.");
+                    count++;
+                    if (count>=1)
+                    {
+                        TempData.Remove("SuccessMessage");
+                    }
+                    return View(userUpdateDto);//güncel. veri
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(userUpdateDto);
+                }
+
+            }
+            else
+            {
+                return View(userUpdateDto);
+            }
+        }
+
+
 
         [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
