@@ -285,6 +285,15 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<ViewResult> ChangeDetails() 
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User); //giris yap. kull. bilgilerini HttpContext.USer dan alıyoruz.
+            var updateDto = _mapper.Map<UserUpdateDto>(user);
+            return View(updateDto);
+        }
+
         [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
         {
