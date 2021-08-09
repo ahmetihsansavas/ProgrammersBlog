@@ -54,6 +54,15 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
             return View("UserLogin");
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Logout() 
+        {
+            await _signinManager.SignOutAsync();
+            return RedirectToAction("Index", "Home", new { Area = "" }); //kullanıcı logout yap. sonra Home Index e yönlend.
+        
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
