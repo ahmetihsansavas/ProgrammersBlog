@@ -524,8 +524,11 @@
                             success: function (data) {
                                 const userUpdateAjaxModel = jQuery.parseJSON(data);
                                 console.log(userUpdateAjaxModel);
-                                const id = userUpdateAjaxModel.UserDto.User.Id; //degis. olan user id 
-                                const tableRow = $(`[name="${id}"]`); // degis. olan user ın satırı
+                                if (userUpdateAjaxModel.UserDto != null) {
+                                    const id = userUpdateAjaxModel.UserDto.User.Id; //degis. olan user id 
+                                    const tableRow = $(`[name="${id}"]`); // degis. olan user ın satırı
+                                }
+
                                 const newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial);
                                 placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                                 const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
@@ -569,6 +572,12 @@
                             },
                             error: function (err) {
                                 console.log(err);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Bir hata olustu.',
+                                    text: err,
+                                    footer: '<a href="">Why do I have this issue?</a>'
+                                });
                             }
                             });
                     });
