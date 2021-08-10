@@ -10,6 +10,7 @@ using ProgrammersBlog.Entities.Dtos;
 using ProgrammersBlog.Shared.Utilities.Extensions;
 using ProgrammersBlog.Shared.Utilities.Results.ComplexTypes;
 using ProgrammersBlog.WebUI.Areas.Admin.Models;
+using ProgrammersBlog.WebUI.Helpers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,14 +26,14 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signinManager;
-        private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
-        public UserController(UserManager<User> userManager, IWebHostEnvironment env, IMapper mapper, SignInManager<User> signinManager)
+        private readonly IImageHelper _imageHelper;
+        public UserController(UserManager<User> userManager, IMapper mapper, SignInManager<User> signinManager, IImageHelper imageHelper)
         {
             _userManager = userManager;
-            _env = env;
             _mapper = mapper;
             _signinManager = signinManager;
+            _imageHelper = imageHelper;
         }
 
         [Authorize(Roles ="Admin")]
@@ -137,7 +138,10 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                userAddDto.Picture = await ImageUpload(userAddDto.UserName,userAddDto.PictureFile); //kull. resim dosyasının adını db de tutuyoruz.
+                var uploadedImageDtoResult = await _imageHelper.UploadedUserImage(userAddDto.UserName,userAddDto.PictureFile); //kull. resim dosyasının adını db de tutuyoruz.
+                userAddDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success 
+                    ? uploadedImageDtoResult.Data.FullName
+                    :"userImages/defaultUser.png";
                 var user =  _mapper.Map<User>(userAddDto); //userAddDto kull AutoMApper ile User nesnesi olust.
                 var result = await _userManager.CreateAsync(user, userAddDto.Password); //result döner
                 if (result.Succeeded)
@@ -235,8 +239,14 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                 var oldUserPicture = oldUser.Picture; //kullanıcının eski resmi
                 if (userUpdateDto.PictureFile!=null)
                 {
-                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName,userUpdateDto.PictureFile); //kull yeni resim eklemek isterse 
-                    isNewPictureUploaded = true;
+                    var uploadedImageDtoResult = await _imageHelper.UploadedUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile); //kull. resim dosyasının adını db de tutuyoruz.
+                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
+                        ? uploadedImageDtoResult.Data.FullName
+                        : "userImages/defaultUser.png";
+                    if (oldUserPicture != "userImages/defaultUser.png") //kull. resmi ortak kull. resim şartı
+                    {
+                        isNewPictureUploaded = true;
+                    }
                 }
                 var updatedUser = _mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser); //güncell. kullanıcı  user tipine dönüst.
                 var result = await _userManager.UpdateAsync(updatedUser); //db de güncellenir
@@ -244,7 +254,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                 {
                     if (isNewPictureUploaded)
                     {
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
                     }
                     var userUpdateViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel
                     {
@@ -306,8 +316,12 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                 var oldUserPicture = oldUser.Picture; //kullanıcının eski resmi
                 if (userUpdateDto.PictureFile != null)
                 {
-                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName, userUpdateDto.PictureFile); //kull yeni resim eklemek isterse 
-                    if (oldUserPicture!="defaultUser.png") //kull. resmi ortak kull. resim şartı
+                    // userUpdateDto.Picture = await ImageUpload(userUpdateDto.UserName, userUpdateDto.PictureFile); //kull yeni resim eklemek isterse 
+                    var uploadedImageDtoResult = await _imageHelper.UploadedUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile); //kull. resim dosyasının adını db de tutuyoruz.
+                    userUpdateDto.Picture = uploadedImageDtoResult.ResultStatus == ResultStatus.Success
+                        ? uploadedImageDtoResult.Data.FullName
+                        : "userImages/defaultUser.png";
+                    if (oldUserPicture!= "userImages/defaultUser.png") //kull. resmi ortak kull. resim şartı
                     {
                         isNewPictureUploaded = true;
                     }
@@ -320,7 +334,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                 {
                     if (isNewPictureUploaded)
                     {
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
                     }
                     TempData.Add("SuccessMessage", $"{updatedUser.UserName} adlı kullanıcı basarıyla güncellenmistir.");
                     count++;
@@ -404,43 +418,6 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
 
         }
 
-        [Authorize(Roles = "Admin,Editor")]
-        public async Task<string> ImageUpload(string userName,IFormFile pictureFile) 
-        {
-            // ~/img/user.Picture
-            string wwroot = _env.WebRootPath;
-            //ahmetsavas 
-           // string fileName = Path.GetFileNameWithoutExtension(picture.FileName); //dosya adını uzantısı olmadan alma
-                                                                                             //  .png
-            string fileExtension = Path.GetExtension(pictureFile.FileName);
-            DateTime dateTime = DateTime.Now;
-            // AhmetSavas_587_38_12_3_10_2021.png
-            string fileName = $"{userName}_{dateTime.FullDateAndTimeStringwithUnderscore()}{fileExtension}";
-            var path = Path.Combine($"{wwroot}/img",fileName); //resim dosyasının kayd. path
-            await using(var stream = new FileStream(path,FileMode.Create))
-            {
-                await pictureFile.CopyToAsync(stream);
-            }
-
-            return fileName;
-        }
-
-        [Authorize(Roles = "Admin,Editor")]
-        public bool ImageDelete(string pictureName) //kull. edit isl. eski resmi silmek icin kull.
-        {
-            string wwwroot = _env.WebRootPath;
-            var fileToDelete = Path.Combine($"{wwwroot}/img", pictureName);
-            if (System.IO.File.Exists(fileToDelete)) //böyle bir dosya var mı
-            {
-                System.IO.File.Delete(fileToDelete); //dosyayı silme
-                return true;
-            }
-            else 
-            {
-                return false;
-            }
-        
-        }
 
         [HttpGet]
         public ViewResult AccessDenied() 

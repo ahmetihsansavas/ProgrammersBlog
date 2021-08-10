@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using ProgrammersBlog.Services.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Extensions;
 using ProgrammersBlog.WebUI.AutoMapper.Profiles;
+using ProgrammersBlog.WebUI.Helpers.Abstract;
+using ProgrammersBlog.WebUI.Helpers.Concrete;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +33,7 @@ namespace ProgrammersBlog.WebUI
             services.AddSession(); // kullanýcý oturumu ekl.
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
             services.LoadMyServices(); //ServiceCollectionExtensions class içeris. yazmýs old. metod
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.ConfigureApplicationCookie(options => 
             {
                 options.LoginPath = new PathString("/Admin/User/Login"); //user giris path i
