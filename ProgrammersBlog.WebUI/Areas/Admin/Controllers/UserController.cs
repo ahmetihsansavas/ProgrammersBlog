@@ -379,6 +379,14 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                         }
                         return View();
                     }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(userPasswordChangeDto);
+                    }
               
                 }
                 else
@@ -392,7 +400,7 @@ namespace ProgrammersBlog.WebUI.Areas.Admin.Controllers
                 ModelState.AddModelError("", "Lütfen girmis old. şimdiki şifrenizi kontrol ediniz...");
                 return View(userPasswordChangeDto);
             }
-            return View();
+         
 
         }
 
