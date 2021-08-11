@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +21,13 @@ namespace ProgrammersBlog.WebUI
 {
     public class Startup
     {
+        public IConfiguration Configuration { get;} //AppSettings e erismek icin kullan.
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration; 
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -32,7 +40,7 @@ namespace ProgrammersBlog.WebUI
             }); //MVC yap. için.., ve uyg. derlemeden kaydettikten sonra sonuclarý gorucez.
             services.AddSession(); // kullanýcý oturumu ekl.
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile)); //Services Katmanýnda kulland. AutoMapper Class'larýnýn oto. taranmasý            
-            services.LoadMyServices(); //ServiceCollectionExtensions class içeris. yazmýs old. metod
+            services.LoadMyServices(connectionString:Configuration.GetConnectionString("LocalDb")); //ServiceCollectionExtensions class içeris. yazmýs old. metod ve AppSettings iceris. olan connectionString imizi ekledik
             services.AddScoped<IImageHelper, ImageHelper>();
             services.ConfigureApplicationCookie(options => 
             {

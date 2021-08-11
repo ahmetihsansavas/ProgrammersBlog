@@ -13,10 +13,14 @@ namespace ProgrammersBlog.DataAccess.Concrete.EntityFramework.Contexts
     public  class ProgrammersBlogContext : IdentityDbContext<User,Role,int,UserClaim,UserRole,UserLogin,RoleClaim,UserToken> //User ,Role ve primary key türünü ver.
     {
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(connectionString: @"Server=(localdb)\MSSQLLocalDB;Database=ProgrammersBlogDb;Trusted_Connection=True;
+        //                                                    Timeout=60;MultipleActiveResultSets=True;");
+        //}
+        public ProgrammersBlogContext(DbContextOptions<ProgrammersBlogContext> options):base(options)
         {
-            optionsBuilder.UseSqlServer(connectionString: @"Server=(localdb)\MSSQLLocalDB;Database=ProgrammersBlogDb;Trusted_Connection=True;
-                                                            Timeout=60;MultipleActiveResultSets=True;");
+
         }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Category> Categories { get; set; }

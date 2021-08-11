@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ProgrammersBlog.DataAccess.Abstract;
 using ProgrammersBlog.DataAccess.Concrete;
 using ProgrammersBlog.DataAccess.Concrete.EntityFramework.Contexts;
@@ -15,10 +16,10 @@ namespace ProgrammersBlog.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection) 
+        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection,string connectionString) 
         {
             //WebUI kısmında Startup.cs içeris.de de yap. ancak biz düzenli olmasını isted. için yaptık.
-            serviceCollection.AddDbContext<ProgrammersBlogContext>();
+            serviceCollection.AddDbContext<ProgrammersBlogContext>(options=>options.UseSqlServer(connectionString));
             //Identity i uyg. tanıtıyoruz ve gerekli ayarlamaları yap.
             serviceCollection.AddIdentity<User, Role>(options => 
             {
