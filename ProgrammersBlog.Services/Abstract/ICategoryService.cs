@@ -21,6 +21,6 @@ namespace ProgrammersBlog.Services.Abstract
         Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName); // sadece frontend taraf. kullanıcıya silind. göst. için
         Task<IResult> HardDelete(int categoryId); //db den silmek için...
         Task<IDataResult<int>> Count();
-        Task<IDataResult<int>> CountByIsDeleted();
+        Task<IDataResult<int>> CountByNonDeleted();
     }
 }
