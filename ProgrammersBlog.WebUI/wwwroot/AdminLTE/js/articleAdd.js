@@ -1,4 +1,6 @@
 ﻿$(document).ready(function () {
+
+    //Trumbowyg
     $('#text-editor').trumbowyg({
         lang: 'tr',
         btns: [
@@ -20,4 +22,14 @@
             ['fontsize']
         ]
     });
+    //Trumbowyg ends
+
+    //Select2
+
+    $('#categoryList').select2({
+        theme: 'bootstrap4',
+        placeholder: "Lütfen bir kategori seçiniz...",
+        allowClear: true
+    });
+
 });
